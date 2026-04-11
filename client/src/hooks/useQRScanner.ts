@@ -12,9 +12,9 @@ export function useQRScanner() {
     setLoading(true);
     setError(null);
     try {
-      const data = await api.scanQR(text);
-      if (data.message === 'Member not found or invalid QR') {
-        setError(data.message);
+      const { data, ok } = await api.scanQR(text);
+      if (!ok) {
+        setError(data.message || 'Failed to process QR scan');
       } else {
         setResult(data);
       }

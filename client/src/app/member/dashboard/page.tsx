@@ -6,6 +6,8 @@ import { motion } from 'framer-motion';
 import QRCode from 'react-qr-code';
 import { User, Activity, Flame, LogOut, Loader2, Plus } from 'lucide-react';
 
+import { api } from '@/lib/api';
+
 export default function MemberDashboard() {
   const [member, setMember] = useState<any>(null);
   const [loading, setLoading] = useState(true);
@@ -20,8 +22,7 @@ export default function MemberDashboard() {
       return;
     }
 
-    fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}/api/member-portal/${memberId}`)
-      .then(res => res.json())
+    api.getMemberProfile(memberId)
       .then(data => {
         if (data.message) {
           router.push('/member/login');
@@ -39,16 +40,9 @@ export default function MemberDashboard() {
     setUpdating(true);
     try {
       const date = new Date().toISOString().split('T')[0];
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}/api/member-portal/${member._id}/progress`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ date, weight: parseFloat(newWeight) })
-      });
-      const data = await res.json();
-      if (res.ok) {
-        setMember({ ...member, progressHistory: data.progressHistory });
-        setNewWeight('');
-      }
+      const data = await api.updateMemberProgress(member._id, { date, weight: parseFloat(newWeight) });
+      setMember({ ...member, progressHistory: data.progressHistory });
+      setNewWeight('');
     } catch (err) {
       console.error(err);
     } finally {

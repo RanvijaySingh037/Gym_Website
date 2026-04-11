@@ -4,6 +4,7 @@ import { motion } from 'framer-motion';
 import { Store, User, Bell, Lock, MapPin, QrCode, Loader2 } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import QRCode from 'react-qr-code';
+import { api } from '@/lib/api';
 
 export default function Settings() {
   const [activeTab, setActiveTab] = useState('gym');
@@ -11,8 +12,7 @@ export default function Settings() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api'}/settings`)
-      .then(res => res.json())
+    api.getSettings()
       .then(data => {
         if(data._id) setAdmin(data);
       })

@@ -5,6 +5,8 @@ import { useRouter } from 'next/navigation';
 import { Dumbbell, ArrowRight, Loader2 } from 'lucide-react';
 import { motion } from 'framer-motion';
 
+import { api } from '@/lib/api';
+
 export default function MemberLogin() {
   const [phone, setPhone] = useState('');
   const [loading, setLoading] = useState(false);
@@ -17,15 +19,9 @@ export default function MemberLogin() {
     setError('');
 
     try {
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}/api/member-portal/login`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ phone })
-      });
-
-      const data = await res.json();
+      const { data, ok } = await api.memberLogin({ phone });
       
-      if (res.ok) {
+      if (ok) {
         // Basic auth for demonstration purposes
         localStorage.setItem('memberId', data.memberId);
         router.push('/member/dashboard');

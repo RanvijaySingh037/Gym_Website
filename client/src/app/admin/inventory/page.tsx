@@ -1,8 +1,8 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
 import { Package, Plus, ShoppingCart, Loader2, AlertTriangle, Box } from 'lucide-react';
+import { api } from '@/lib/api';
 
 export default function InventoryDashboard() {
   const [items, setItems] = useState<any[]>([]);
@@ -18,10 +18,7 @@ export default function InventoryDashboard() {
 
   const fetchInventory = async () => {
     try {
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}/api/inventory`, {
-        headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
-      });
-      const data = await res.json();
+      const data = await api.getInventory();
       setItems(Array.isArray(data) ? data : []);
     } catch (err) {
       console.error(err);
@@ -34,17 +31,10 @@ export default function InventoryDashboard() {
     e.preventDefault();
     setSubmitting(true);
     try {
-      await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}/api/inventory`, {
-        method: 'POST',
-        headers: { 
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${localStorage.getItem('token')}`
-        },
-        body: JSON.stringify({ 
-          itemName: formData.itemName, 
-          stockLeft: parseInt(formData.stockLeft), 
-          price: parseFloat(formData.price) 
-        })
+      await api.createInventoryItem({ 
+        itemName: formData.itemName, 
+        stockLeft: parseInt(formData.stockLeft), 
+        price: parseFloat(formData.price) 
       });
       setIsModalOpen(false);
       setFormData({ itemName: '', stockLeft: '', price: '' });
@@ -59,15 +49,8 @@ export default function InventoryDashboard() {
   const handleSell = async (id: string, currentStock: number) => {
     if (currentStock <= 0) return;
     try {
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}/api/inventory/${id}/sell`, {
-        method: 'POST',
-        headers: { 
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${localStorage.getItem('token')}`
-        },
-        body: JSON.stringify({ quantity: 1 })
-      });
-      if (res.ok) fetchInventory();
+      await api.sellInventoryItem(id, 1);
+      fetchInventory();
     } catch (err) {
       console.error(err);
     }

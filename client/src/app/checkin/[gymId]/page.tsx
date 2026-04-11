@@ -5,6 +5,8 @@ import { CheckCircle, XCircle, MapPin, Loader2, Phone, MessageCircle } from 'luc
 import { motion, AnimatePresence } from 'framer-motion';
 import fpPromise from '@fingerprintjs/fingerprintjs';
 
+import { api } from '@/lib/api';
+
 export default function CheckinPage() {
   const params = useParams();
   const gymId = params?.gymId;
@@ -17,7 +19,6 @@ export default function CheckinPage() {
   const [isDeviceMismatched, setIsDeviceMismatched] = useState(false);
 
   useEffect(() => {
-
     // Initialize Fingerprint
     fpPromise.load()
       .then((fp: any) => fp.get())
@@ -35,20 +36,17 @@ export default function CheckinPage() {
     
     try {
       const deviceInfo = navigator.userAgent;
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api'}/attendance/checkin-qr`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ gymId, identifier, deviceInfo, deviceId })
-      });
-      const data = await res.json();
+      const data = await api.getCheckinQR({ gymId, identifier, deviceInfo, deviceId });
       
-      if (!res.ok) {
-        if (data.message === 'DeviceMismatched') {
-          setIsDeviceMismatched(true);
-          throw new Error('DeviceMismatched');
-        }
-        throw new Error(data.message);
+      if (data.message === 'DeviceMismatched') {
+        setIsDeviceMismatched(true);
+        throw new Error('DeviceMismatched');
       }
+      
+      if (data.error || data.message === 'Internal server error') {
+         throw new Error(data.message || 'Check-in failed');
+      }
+
       setSuccess(data);
     } catch (err: any) {
       if (err.message !== 'DeviceMismatched') {

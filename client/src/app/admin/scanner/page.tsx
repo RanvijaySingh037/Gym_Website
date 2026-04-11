@@ -4,6 +4,8 @@ import { useState } from 'react';
 import { CheckCircle2, XCircle, Camera, Loader2 } from 'lucide-react';
 import { Scanner } from '@yudiel/react-qr-scanner';
 
+import { api } from '@/lib/api';
+
 export default function ScannerPage() {
   const [scanResult, setScanResult] = useState<any>(null);
   const [error, setError] = useState<string>('');
@@ -17,18 +19,9 @@ export default function ScannerPage() {
       setIsScanning(false);
       
       try {
-        const token = localStorage.getItem('token');
-        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}/api/attendance/scan`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${token}`
-          },
-          body: JSON.stringify({ qrCodeString })
-        });
+        const { data, ok } = await api.scanQR(qrCodeString);
         
-        const data = await res.json();
-        if (res.ok) {
+        if (ok) {
           setScanResult({ success: true, message: data.message, member: data.member });
           setError('');
         } else {

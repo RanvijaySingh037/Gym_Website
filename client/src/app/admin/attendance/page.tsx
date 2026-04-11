@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Users, History, AlertTriangle, Loader2, CheckCircle2, QrCode } from 'lucide-react';
 import io from 'socket.io-client';
+import { api } from '@/lib/api';
 
 export default function AttendanceDashboard() {
   const [activeTab, setActiveTab] = useState<'live'|'history'|'retention'>('live');
@@ -40,8 +41,7 @@ export default function AttendanceDashboard() {
 
   const fetchTodayFeed = async () => {
     try {
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api'}/attendance/today`);
-      const data = await res.json();
+      const data = await api.getAttendanceToday();
       setTodayFeed(Array.isArray(data) ? data : []);
       setLoading(false);
     } catch (err) {
@@ -53,8 +53,7 @@ export default function AttendanceDashboard() {
   const fetchHistoryFeed = async () => {
     setLoading(true);
     try {
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api'}/attendance/history?date=${historyDate}`);
-      const data = await res.json();
+      const data = await api.getAttendanceHistory(historyDate);
       setHistoryFeed(Array.isArray(data) ? data : []);
       setLoading(false);
     } catch (err) {
@@ -65,8 +64,7 @@ export default function AttendanceDashboard() {
 
   const fetchRetentionFeed = async () => {
     try {
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api'}/attendance/retention`);
-      const data = await res.json();
+      const data = await api.getRetentionStats();
       setRetentionFeed(Array.isArray(data) ? data : []);
     } catch (err) {
       console.error(err);
