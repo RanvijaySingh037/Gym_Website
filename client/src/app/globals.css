@@ -6,10 +6,16 @@
   --primary: #E11D48;
 }
 
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: 6rem; /* 96px - enough to clear the 70-80px footer */
+}
+
 body {
   background: var(--background);
   color: var(--foreground);
   font-family: 'Inter', sans-serif;
+  overflow-x: hidden; /* Prevent horizontal scroll globally */
 }
 
 .glassmorphism {

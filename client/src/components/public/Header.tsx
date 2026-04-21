@@ -38,13 +38,13 @@ export default function Header() {
   return (
     <header 
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
-        isScrolled ? 'bg-black/60 backdrop-blur-xl border-b border-white/5 py-4' : 'bg-transparent py-8'
+        isScrolled ? 'bg-black/80 backdrop-blur-xl border-b border-white/5 py-3' : 'bg-transparent py-5 lg:py-8'
       }`}
     >
-      <div className="container mx-auto px-6 flex items-center justify-between">
-        <Link href="/" onClick={() => window.scrollTo(0,0)} className="flex items-center gap-2 group">
-          <Dumbbell className="w-8 h-8 text-rose-600 group-hover:rotate-12 transition-transform" />
-          <span className="text-2xl font-black tracking-tighter">GYM<span className="text-rose-600">OS</span></span>
+      <div className="container mx-auto px-4 md:px-6 flex items-center justify-between">
+        <Link href="/" onClick={() => window.scrollTo(0,0)} className="flex items-center gap-2 group shrink-0">
+          <Dumbbell className="w-7 h-7 md:w-8 md:h-8 text-rose-600 group-hover:rotate-12 transition-transform" />
+          <span className="text-xl md:text-2xl font-black tracking-tighter">GYM<span className="text-rose-600">OS</span></span>
         </Link>
 
         {/* Desktop Nav */}

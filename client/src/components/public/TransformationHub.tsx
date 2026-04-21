@@ -120,7 +120,7 @@ export default function TransformationHub() {
   const isInView = useInView(containerRef, { once: true, margin: "-100px" });
 
   return (
-    <section id="transformations" className="py-24 bg-black overflow-hidden relative">
+    <section id="transformations" className="py-24 bg-black overflow-hidden relative scroll-mt-24">
       {/* Background Decorative Elements */}
       <div className="absolute top-0 right-0 w-96 h-96 bg-rose-600/5 blur-[120px] rounded-full -mr-48 -mt-24" />
       <div className="absolute bottom-0 left-0 w-96 h-96 bg-rose-600/5 blur-[120px] rounded-full -ml-48 -mb-24" />

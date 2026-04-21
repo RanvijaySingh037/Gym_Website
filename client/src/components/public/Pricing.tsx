@@ -29,7 +29,7 @@ const plans = [
 
 export default function Pricing() {
   return (
-    <section id="pricing" className="py-24 bg-black relative">
+    <section id="pricing" className="py-24 bg-black relative scroll-mt-24">
       <div className="container mx-auto px-6 text-center">
         <motion.div
            initial={{ opacity: 0, y: 20 }}
@@ -41,7 +41,7 @@ export default function Pricing() {
           <p className="text-zinc-500 font-medium text-lg">Choose a plan that fits your goals. No hidden charges, just results.</p>
         </motion.div>
         
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-6xl mx-auto">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-7xl mx-auto">
           {plans.map((plan, idx) => (
             <motion.div
               key={idx}
